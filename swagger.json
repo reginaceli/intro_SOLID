@@ -1,0 +1,370 @@
+{
+    "openapi" : "3.0.0",
+
+    "info":{
+        "title" : "Desafio : Documentação API",
+        "description" : "Aplicação de listagem e cadastro de usuários",
+        "version" : "1.0.0",
+        "contact" :{
+            "email" : "regicelis7@hotmail.com"
+        }
+    },
+    "host" : "http://localhost:3333//api-docs",
+
+    "paths":{
+        "/users":{
+            "post":{
+                "tags":["users"],
+                "summary":"Cria um novo usuário",
+                "description":"Cria um novo usuário com `name` e `email`  ",
+                "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                    "properties":{
+                                        "admin":{
+                                            "type":"boolean"
+                                        },
+                                        "id":{
+                                            "type":"string"
+                                        },
+                                        "name":{
+                                            "type":"string"
+                                        },
+                                        "email":{
+                                            "type":"string"
+                                        },
+                                        "created_at":{
+                                            "type":"date"
+                                        },
+                                        "updated_at":{
+                                            "type":"date"
+                                        }
+                                    
+                                    },
+                                    "example":{
+                                        "name":"alice",
+                                        "email":"alice@email.com"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "201":{
+                        "descripiton":"Created",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                    "properties":{
+                                        "admin":{
+                                            "type":"boolean"
+                                        },
+                                        "id":{
+                                            "type":"string"
+                                        },
+                                        "name":{
+                                            "type":"string"
+                                        },
+                                        "email":{
+                                            "type":"string"
+                                        },
+                                        "created_at":{
+                                            "type":"date"
+                                        },
+                                        "updated_at":{
+                                            "type":"date"
+                                        }
+                                    },
+                                    "example":{
+                                        "admin":false,
+                                        "id":"575460c9-7a8f-43c6-b678-678ce463c782",
+                                        "name":"alice",
+                                        "email":"alice@email.com",
+                                        "created_at": "2021-04-14T01:53:08.362Z",
+                                        "updated_at": "2021-04-14T01:55:49.368Z"
+                                    }
+                                }
+                            }
+                        }
+                    },
+
+                    "400":{
+                        "description":"Retorna mensagem de erro quando a criação do usuário não foi executada com sucesso",
+
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                    "properties":{
+                                    "error":{
+                                        "type":"message"
+                                    }
+                                    },
+                                    "example":{
+                                        "error":"This email is alrealdy exists!"
+                                    }
+                                }
+                            }
+                        }
+                        
+                    }
+                
+                }
+            },
+
+            "get":{
+                "tags":["users"],
+                "summary":"Retorna uma lista com todos os usuários cadastrados",
+                "description":"Somente usuários `admin` têm autorização para executarem listagem completa",
+                "parameters":[
+                    {
+                        "name": "user_id",
+                        "in": "header",
+                        "description":"ID do usuário",
+                        "required": true,
+                        "schema": {
+                          "type": "string",
+                          "format":"uuid"
+                        }
+                      }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"Listagem dos usuários",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                    "properties":{
+                                        "admin":{
+                                            "type":"boolean"
+                                        },
+                                        "id":{
+                                            "type":"string"
+                                        },
+                                        "name":{
+                                            "type":"string"
+                                        },
+                                        "email":{
+                                            "type":"string"
+                                        },
+                                        "created_at":{
+                                            "type":"date"
+                                        },
+                                        "updated_at":{
+                                            "type":"date"
+                                        }
+                                    },
+                                    "example":[
+                                       {
+                                        "admin":true,
+                                        "id":"575460c9-7a8f-43c6-b678-678ce463c782",
+                                        "name":"alice",
+                                        "email":"alice@email.com",
+                                        "created_at": "2021-04-14T01:53:08.362Z",
+                                        "updated_at": "2021-04-14T01:55:49.368Z"
+                                       },
+                                       {
+                                        "admin":false,
+                                        "id":"575460c9-7a8f-43c6-b678-678ce463c782",
+                                        "name":"bob",
+                                        "email":"bob@email.com",
+                                        "created_at": "2021-04-14T01:53:08.362Z",
+                                        "updated_at": "2021-04-14T01:55:49.368Z"
+                                      }
+                                    ]
+                                }                                     
+                            }
+                            
+                        }
+                    },
+
+                    "400":{
+                        "description":"Usuário não autorizado",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                        "properties":{
+                                            "error":{
+                                                "type":"message"
+                                            }
+                                        },
+                                        "example":{
+                                            "error":"A user with the specified ID was not authorized"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/users/{user_id}":{
+            "get":{
+                "tags":["users"],
+                "summary":"Lista um usuário expecifico",
+                "description":"Recebe o `user_id` e retorna seus dados",
+                "parameters":[
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description":"ID do usuário",
+                        "required": true,
+                        "schema": {
+                          "type": "string",
+                          "format":"uuid"
+                        }
+                      }
+                ],
+
+                "responses":{
+                    "200":{
+                        "description":"Success",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                        "properties":{
+                                            "admin":{
+                                                "type":"boolean"
+                                            },
+                                            "id":{
+                                                "type":"string"
+                                            },
+                                            "name":{
+                                                "type":"string"
+                                            },
+                                            "email":{
+                                                "type":"string"
+                                            },
+                                            "created_at":{
+                                                "type":"date"
+                                            },
+                                            "updated_at":{
+                                                "type":"date"
+                                            }
+                                        },
+                                        "example":{
+                                            "id": "364dcbeb-4a52-44fd-8320-01649443c4ba",
+                                            "admin": true,
+                                            "name": "alice",
+                                            "email": "alice@email.com",
+                                            "created_at": "2021-04-14T01:53:08.362Z",
+                                            "updated_at": "2021-04-14T01:55:49.368Z"
+                                        }
+                                }
+                            }
+                        }
+                    },
+
+                    "400":{
+                        "description":"Usuário não encontrado",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                        "properties":{
+                                            "error":{
+                                                "type":"message"
+                                            }
+                                        },
+                                        "example":{
+                                            "error":"A user with the specified ID was not found."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/users/{user_id}/admin":{
+            "patch":{
+                "tags": ["users"],
+                "summary":"Torna um usuário comum para administrador",
+                "description":"Recebe o `user_id` e torna o usuário correspondente em administrador ",
+                "parameters":[
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description":"ID do usuário",
+                        "required": true,
+                        "schema": {
+                          "type": "string",
+                          "format":"uuid"
+                        }
+                    }
+                ],
+
+                "responses": {
+                    "200": {
+                        "description":"Success",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                        "properties":{
+                                            "admin":{
+                                                "type":"boolean"
+                                            },
+                                            "id":{
+                                                "type":"string"
+                                            },
+                                            "name":{
+                                                "type":"string"
+                                            },
+                                            "email":{
+                                                "type":"string"
+                                            },
+                                            "created_at":{
+                                                "type":"date"
+                                            },
+                                            "updated_at":{
+                                                "type":"date"
+                                            }
+                                        },
+                                        "example":{
+                                            "id": "364dcbeb-4a52-44fd-8320-01649443c4ba",
+                                            "admin": true,
+                                            "name": "alice",
+                                            "email": "alice@email.com",
+                                            "created_at": "2021-04-14T01:53:08.362Z",
+                                            "updated_at": "2021-04-14T01:55:49.368Z"
+                                        }
+                                }
+                            }
+                        }
+                    },
+
+                    "400":{
+                        "description":"Usuário não encontrado",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                        "properties":{
+                                            "error":{
+                                                "type":"message"
+                                            }
+                                        },
+                                        "example":{
+                                            "error":"A user with the specified ID was not found."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+  

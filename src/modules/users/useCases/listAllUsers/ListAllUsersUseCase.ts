@@ -12,11 +12,11 @@ class ListAllUsersUseCase {
     const user = this.usersRepository.findById(user_id);
 
     if (!user) {
-      throw new Error("User not found.");
+      throw new Error("A user with the specified ID was not found.");
     }
 
     if (!user.admin) {
-      throw new Error("User not authorized.");
+      throw new Error("A user with the specified ID was not authorized.");
     }
 
     return this.usersRepository.list();
